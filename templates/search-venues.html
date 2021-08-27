@@ -1,0 +1,26 @@
+{% extends 'index.html' %}
+
+{% block content %}
+      <div class=container>
+        <h1>Search Venues</h1>
+        <div class="col-md-8">
+          <form method="POST">
+            {{ form.hidden_tag() }}
+
+            {% for field in form if field.widget.input_type != 'hidden'%}
+            <div class="form-group">
+              {{field.label}}
+              {{field(class_="form-control")}}
+              {% for err in field.errors %}
+              <small class="form-text text-danger">
+                {{err}}
+              </small>
+              {% endfor %}
+            </div>
+            {% endfor %}
+            <button class="btn  btn-success  btn-lg">Search</button>
+            <!-- <a href="/phones" class="btn btn-danger btn-lg">Go Back</a> -->
+          </form>
+        </div>
+      </div>
+      {% endblock %}
