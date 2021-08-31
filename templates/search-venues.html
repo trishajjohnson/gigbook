@@ -4,7 +4,7 @@
       <div class=container>
         <h1>Search Venues</h1>
         <div class="col-md-8">
-          <form method="POST">
+          <form id="search-venues-form" method="POST">
             {{ form.hidden_tag() }}
 
             {% for field in form if field.widget.input_type != 'hidden'%}
@@ -21,6 +21,15 @@
             <button class="btn  btn-success  btn-lg">Search</button>
             <!-- <a href="/phones" class="btn btn-danger btn-lg">Go Back</a> -->
           </form>
+
+          <div class=container>
+            <ul id="venue-results">
+              {% for venue in venues %}
+              <li>{{ venue["name"] }} -- {{ venue["city"] }}, {{ venue["state"] }}</li>
+              {% endfor %}
+            </ul>
+          </div>
         </div>
       </div>
+
       {% endblock %}

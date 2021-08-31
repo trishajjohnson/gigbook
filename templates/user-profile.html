@@ -1,0 +1,44 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div class="container">
+    {% block title %}
+    <h2 class="display-2 text-center">{{ user.username }}</h2>
+    {% endblock %}
+    <div class="text-center justify-content-center">
+        <img src="/static/images/default-pic.png" alt="profile image">
+    </div>
+    <div class="text-center justify-content-center">
+        <p><i class="fas fa-map-marker-alt"></i> {{ user.city }}, {{ user.state }}</p>
+    </div>
+    <div class="container justify-content-center text-center">
+        <form>
+            {% if session["username"] == g.username %}
+                <button formaction="/users/{{ user.username }}/delete" formmethod="POST" class="btn btn-danger">Delete Account</button>
+            {% endif %}
+        </form>
+    </div>  
+    <div class="container justify-content-center text-center">
+        <h3 class="text-center">Favorite Venues</h3>
+        
+        <ul style="list-style: none;">
+            {% if user.favorites %}
+                {% for venue in user.favorites %}
+                <li>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6">
+                            <p>{{ venue.venue_name }}</p>
+                            
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            {% else %}
+                <p>{{user.username}} has no favorite venues yet...</p>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

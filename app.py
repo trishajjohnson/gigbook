@@ -1,16 +1,21 @@
 from flask import Flask, render_template, flash, redirect, render_template, request, session, g, jsonify
+import requests
 from flask_debugtoolbar import DebugToolbarExtension
 # from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
+# from flask_wtf.csrf import CSRFProtect
 
 from models import db, connect_db, User, Country, State, City
 from forms import SearchVenuesForm, LoginForm, UserAddForm
-from .env import API_KEY
-print("Did my api key make it?", API_KEY)
+
+from secret import API_KEY
+
 CURR_USER_KEY = "curr_user"
-BASE_URL = "https://app.ticketmaster.com/discovery/v2/"
+BASE_URL = "https://app.ticketmaster.com/discovery/v2"
 
 app = Flask(__name__)
+# csrf = CSRFProtect(app)
+# csrf.init_app(app)
 
 app.config["SECRET_KEY"] = "oh-so-secret"
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///gigbook_db"
@@ -20,6 +25,7 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
+
 
 @app.before_request
 def add_user_to_g():
@@ -32,10 +38,12 @@ def add_user_to_g():
         g.user = None
 
 
+
 def do_login(user):
     """Log in user."""
 
     session[CURR_USER_KEY] = user.id
+
 
 
 def do_logout():
@@ -43,6 +51,9 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+
+
+
 
 @app.route('/register', methods=["GET", "POST"])
 def signup():
@@ -80,6 +91,7 @@ def signup():
         return render_template('register.html', form=form)
 
 
+
 @app.route('/login', methods=["GET", "POST"])
 def login():
     """Handle user login."""
@@ -101,6 +113,7 @@ def login():
     return render_template('login.html', form=form)
 
 
+
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
@@ -112,6 +125,7 @@ def logout():
     return redirect("/login")
 
 
+
 @app.route("/")
 def homepage():
     """Show homepage."""
@@ -119,28 +133,74 @@ def homepage():
     return render_template("index.html")
 
 
+
 @app.route("/search-venues", methods=["GET", "POST"])
 def searchVenues():
-    """Displays Venue Search form."""
-
+    """Displays Venue Search form. On submit, Ticketmaster 
+    API is called and response is returned in JSON format, 
+    to be displayed on page as list of venues."""
+    print("before form is instantiated")
+    
     form = SearchVenuesForm()
-    print("before form validate code line")
-    if form.validate_on_submit():
-        print("sfter form validate code line")
-        country = form.country.data
-        state = form.state.data
-        city = form.city.data
 
-        response = requests.get(f'{BASE_URL}/venues.json?keyword={city}&apikey=')
-        print('country, state, city', country, state, city)
-        # flash(f'You have successfully searched for venues in {city.name}, {state.name}, {country.name}.')        
-        return redirect("/search-venues")
+    if form.validate_on_submit():
+        state = int(form.state.data)
+        city = int(form.city.data)
+        
+        s = State.query.get(state)
+        c = City.query.get(city)
+
+        # example of sending request with a limit on number of venues returned 
+
+        # response = requests.get(f'{BASE_URL}/venues.json?size=5&keyword={c.name}&apikey={API_KEY}')
+
+        # returns venues with no limit 
+
+        response = requests.get(f'{BASE_URL}/venues.json?size=200&sort=name,asc&keyword={c.name}&apikey={API_KEY}')
+        
+        venues = []
+        numPages = response.json()["page"]["totalPages"]
+
+        i = 0
+
+        while i <= numPages:
+
+            resp = requests.get(f'{BASE_URL}/venues.json?size=200&page={i}&sort=name,asc&keyword={c.name}&apikey={API_KEY}')
+
+            for venue in resp.json()["_embedded"]["venues"]:
+                
+                if venue["city"]["name"] == c.name and venue["state"]:
+                    ven = {"name": venue["name"], "city": venue["city"]["name"], "state": venue["state"]["name"]}
+                    venues.append(ven)
+                    
+                else:
+                    ven = {"name": venue["name"], "city": venue["city"]["name"]}
+                    venues.append(ven)
+
+            i += 1
+            
+        return render_template('search-venues.html', form=form, venues=venues)
 
     else:
         return render_template(
             "search-venues.html", form=form)
 
 
+@app.route("/users/<int:user_id>")
+def show_profile(user_id):
+    """Shows user profile."""
+
+    user = User.query.get(user_id)
+
+    if g.user and user.id == g.user.id:
+
+        return render_template("user-profile.html", user=user)
+
+    else:
+
+        flash("You must login before viewing profile.")
+
+        return render_template("login.html")
 ######################################################
 #                                                    #
 # routes for dynamic SelectFields in SearchVenueForm #

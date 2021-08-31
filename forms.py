@@ -5,7 +5,7 @@ from wtforms import StringField, SelectField, FloatField, PasswordField, TextAre
 from wtforms.validators import InputRequired, Optional, Email, DataRequired, Length
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
-from models import db, Country
+from models import db, Country, State
 
 # countries = [(country.id, country.name) for country in models.Country.query.all()]
 
@@ -41,8 +41,8 @@ class SearchVenuesForm(FlaskForm):
     # country = SelectField('Country', choices=countries, allow_blank=True)
     # country = QuerySelectField('Country', query_factory=countries, allow_blank=True, get_label='name')
     # country = QuerySelectField('Country', query_factory=lambda: models.Country.query, allow_blank=True, get_label='name')
-    country = QuerySelectField(label='Country', query_factory=lambda: db.session.query(Country), allow_blank=True, get_label='name')
-    state = SelectField("State", choices=[])
-    city = SelectField("City", choices=[])
+    # country = QuerySelectField(label='Country', query_factory=lambda: db.session.query(Country), allow_blank=True, get_label='name')
+    state = SelectField(label="State", choices=[(1, "Texas")])
+    city = SelectField(label="City", choices=[(1, "Dallas")])
 
 

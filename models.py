@@ -23,9 +23,19 @@ class User(db.Model):
         unique=True,
     )
 
+    city = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    state = db.Column(
+        db.Text,
+        nullable=True
+    )
+
     image_url = db.Column(
         db.Text,
-        default="/static/images/default-pic.png",
+        default="/static/images/default-pic.png"
     )
 
     password = db.Column(
@@ -33,12 +43,15 @@ class User(db.Model):
         nullable=False,
     )
 
+    favorites = db.relationship('Favorite')
+
+
     def __repr__(self):
         return f"<User #{self.id}: {self.username}>"
 
 
     @classmethod
-    def signup(cls, username, password, image_url):
+    def signup(cls, username, password, city, state, image_url):
         """Sign up user.
 
         Hashes password and adds user to system.
@@ -49,6 +62,8 @@ class User(db.Model):
         user = User(
             username=username,
             password=hashed_pwd,
+            city=city,
+            state=state,
             image_url=image_url,
         )
 
@@ -76,6 +91,30 @@ class User(db.Model):
         return False
 
 
+class Favorite(db.Model):
+    """Favorite venue in the system."""
+
+    __tablename__ = 'favorites'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+    )
+
+    venue_name = db.Column(
+        db.Text,
+        nullable=False,
+        unique=True,
+    )
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey('users.id', ondelete='cascade'),
+        nullable=False,
+        unique=True
+    )
+
+
 class Country(db.Model):
     """Country in the system."""
 
@@ -87,6 +126,12 @@ class Country(db.Model):
     )
 
     name = db.Column(
+        db.Text,
+        nullable=False,
+        unique=True,
+    )
+
+    country_code = db.Column(
         db.Text,
         nullable=False,
         unique=True,
@@ -112,6 +157,12 @@ class State(db.Model):
     )
 
     name = db.Column(
+        db.Text,
+        nullable=False,
+        unique=True,
+    )
+
+    state_code = db.Column(
         db.Text,
         nullable=False,
         unique=True,
