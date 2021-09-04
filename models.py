@@ -23,6 +23,12 @@ class User(db.Model):
         unique=True,
     )
 
+    email = db.Column(
+        db.Text,
+        nullable=False,
+        unique=True
+    )
+
     city = db.Column(
         db.Text,
         nullable=True
@@ -43,7 +49,7 @@ class User(db.Model):
         nullable=False,
     )
 
-    favorites = db.relationship('Favorite')
+    favorites = db.relationship('Favorite', cascade="all,delete")
 
 
     def __repr__(self):
@@ -51,7 +57,7 @@ class User(db.Model):
 
 
     @classmethod
-    def signup(cls, username, password, city, state, image_url):
+    def signup(cls, username, email, password, city, state, image_url):
         """Sign up user.
 
         Hashes password and adds user to system.
@@ -61,10 +67,11 @@ class User(db.Model):
 
         user = User(
             username=username,
+            email=email,
             password=hashed_pwd,
             city=city,
             state=state,
-            image_url=image_url,
+            image_url=image_url
         )
 
         db.session.add(user)

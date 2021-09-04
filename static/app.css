@@ -1,4 +1,31 @@
-#success {
+ul {
+    list-style: none;
+}
+
+.success {
     background-color: lightgreen;
     color: darkgreen;
+}
+
+.danger {
+    background-color: #FFB7B7;
+    color: red;
+}
+
+.flash {
+    padding: 15px;
+}
+
+#nav-img {
+    width: 30px;
+    border-radius: 50%;
+}
+
+.nav-profile-link {
+    display: inline-block;
+}
+
+.profile-img {
+    border-radius: 50%;
+    width: 300px;
 }

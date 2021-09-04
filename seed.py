@@ -8,7 +8,7 @@ connect_db(app)
 db.drop_all()
 db.create_all()
 
-u = User.signup(username="YogiBoi11", password="password", city="Dallas", state="Texas", image_url="")
+u = User.signup(username="YogiBoi11", email="yogiboi11@gmail.com", password="password", city="Dallas", state="Texas")
 c = Country(name="United States", country_code="US")
 
 db.session.add_all([u, c])

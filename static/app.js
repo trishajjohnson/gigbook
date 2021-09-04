@@ -1,3 +1,37 @@
+async function toggleFavorite(evt) {
+    const target = evt.target.closest('i');
+    console.log("target class name", target.className)
+    const venName = target.closest('i').id;
+    console.log("venue name", venName);
+    // const story = storyList.stories.find(s => s.storyId === storyId);
+  
+    if(target.className === "far fa-heart"){
+      target.className = "fas fa-heart";
+      axios({
+        method: 'POST',
+        url: '/favorites/add',
+        data: {
+          venue_name: venName,
+        }
+      });
+    } 
+    else if(target.className === "fas fa-heart"){
+      target.className = "far fa-heart";
+      axios({
+        method: 'DELETE',
+        url: '/favorites/delete',
+        data: {
+          venue_name: venName,
+        }
+      });    
+    }
+  } 
+  
+  $("span").on("click", "i", toggleFavorite);
+//   $("span").on("click", "i", toggleFavorite);
+
+
+
 // CSRF token for JS axios requests 
 
 // axios.defaults.headers.common["X-CSRFToken"] = "{{ csrf_token() }}";

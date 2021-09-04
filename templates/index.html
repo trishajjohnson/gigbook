@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/app.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <title>Document</title>
@@ -65,9 +66,9 @@
               <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
               {% else %}
               <li class="nav-item">
-                <a class="nav-link" href="/users/{{ g.user.id }}">
-                  <img src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
-                  <p>{{ g.user.username }}</p>
+                <a class="nav-link nav-profile-link" href="/users/{{ g.user.id }}">
+                  <img id="nav-img" class="nav-profile-link" src="{{ g.user.image_url }}" alt="{{ g.user.username }}">
+                  <p class="nav-profile-link">{{ g.user.username }}</p>
                 </a>
               </li>
               <li class="nav-item">
@@ -79,10 +80,12 @@
         </div>
       </div>
     </nav>
-  {% for msg in get_flashed_messages()%}
-  <p>
-    {{msg}}
-  </p>
+  {% for cat, msg in get_flashed_messages(with_categories=true)%}
+  <div class="{{ cat }}">
+    <p class="flash">
+      {{msg}}
+    </p>
+  </div>
   {% endfor %}
   {% block content %}
   <div class=container>

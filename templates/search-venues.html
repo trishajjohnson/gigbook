@@ -1,35 +1,85 @@
 {% extends 'index.html' %}
 
 {% block content %}
-      <div class=container>
-        <h1>Search Venues</h1>
-        <div class="col-md-8">
-          <form id="search-venues-form" method="POST">
-            {{ form.hidden_tag() }}
 
-            {% for field in form if field.widget.input_type != 'hidden'%}
-            <div class="form-group">
-              {{field.label}}
-              {{field(class_="form-control")}}
-              {% for err in field.errors %}
-              <small class="form-text text-danger">
-                {{err}}
-              </small>
-              {% endfor %}
-            </div>
-            {% endfor %}
-            <button class="btn  btn-success  btn-lg">Search</button>
-            <!-- <a href="/phones" class="btn btn-danger btn-lg">Go Back</a> -->
-          </form>
+<div class=container>
 
-          <div class=container>
-            <ul id="venue-results">
-              {% for venue in venues %}
-              <li>{{ venue["name"] }} -- {{ venue["city"] }}, {{ venue["state"] }}</li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
+  <h1>Search Venues</h1>
+  <div class="col-md-8">
+    <form id="search-venues-form" method="POST">
+
+      {{ form.hidden_tag() }}
+
+      {% for field in form if field.widget.input_type != 'hidden'%}
+
+      <div class="form-group">
+
+        {{field.label}}
+        {{field(class_="form-control")}}
+        {% for err in field.errors %}
+
+        <small class="form-text text-danger">
+          {{err}}
+        </small>
+
+        {% endfor %}
+
       </div>
 
-      {% endblock %}
+      {% endfor %}
+
+      <button class="btn  btn-success  btn-lg">Search</button>
+      <!-- <a href="/phones" class="btn btn-danger btn-lg">Go Back</a> -->
+    </form>
+  </div>
+
+  {% if venues %}
+
+  <div class="table-responsive" style="width: 100%;">
+    <table class="table table-hover mb-0">
+        <thead class="thead table-dark">
+            <tr>
+                <th>#</th>
+                <th>Venue Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Zip Code</th>
+                <th>Favorite</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for venue in venues %}
+
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td class="align-middle">{{ venue.name }}</td>
+                <td class="align-middle">{{ venue.address }}</td>
+                <td class="align-middle">{{ venue.city }}</td>
+                <td class="align-middle">{{ venue.state }}</td>
+                <td class="align-middle">{{ venue.postalCode }}</td>
+                <td class="align-middle">
+                  {% if g.user %}
+                  
+                  <a class="btn btn-primary" href="/favorites/add"><i class="fas fa-heart"></i></a>  
+                  {% endif %} 
+                  {% if g.user and venue.name not in favorites %} 
+                  <a class="btn btn-primary" href="/favorites/add"><i class="far fa-heart"></i></a> 
+                  {% endif %}
+                  {% if not g.user %}
+                  {% endif %}
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+    </table>
+  </div>   
+
+  {% endif %}
+
+</div>
+      
+{% endblock %}

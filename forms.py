@@ -2,7 +2,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SelectField, FloatField, PasswordField, TextAreaField
-from wtforms.validators import InputRequired, Optional, Email, DataRequired, Length
+from wtforms.validators import InputRequired, Optional, Email, DataRequired, Length, EqualTo
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from models import db, Country, State
@@ -14,7 +14,10 @@ class UserAddForm(FlaskForm):
 
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[Length(min=6)])
+    city = StringField('City')
+    state = StringField('State')
+    password = PasswordField("Password", validators=[InputRequired(message="Please enter a password"), EqualTo('confirm', message='Passwords must match'), Length(min=6)])
+    confirm = PasswordField('Confirm Password')
     image_url = StringField('(Optional) Image URL')
 
 
@@ -27,13 +30,12 @@ class LoginForm(FlaskForm):
 class EditProfileForm(FlaskForm):
     """Edit Profile Form."""
 
-    username = StringField('Username', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired(), Email()])
-    image_url = StringField('(Optional) Image URL')
-    header_image_url = StringField('(Optional) Header Image URL')
-    bio = TextAreaField('(Optional) Bio')
-    password = PasswordField('Password', validators=[Length(min=6)])
-
+    image_url = StringField('(Optional) Image URL') 
+    # image_url = StringField('(Optional) Image URL', validators = [Optional(), Length(max = 50)], 
+    # filters = [lambda x: x or None])
+    city = StringField('City')
+    state = StringField('State')
 
 class SearchVenuesForm(FlaskForm):
     """Form for searching venues."""
