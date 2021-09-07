@@ -41,6 +41,7 @@ class User(db.Model):
 
     image_url = db.Column(
         db.Text,
+        nullable=True,
         default="/static/images/default-pic.png"
     )
 
@@ -110,15 +111,13 @@ class Favorite(db.Model):
 
     venue_name = db.Column(
         db.Text,
-        nullable=False,
-        unique=True,
+        nullable=False
     )
 
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id', ondelete='cascade'),
-        nullable=False,
-        unique=True
+        nullable=False
     )
 
 

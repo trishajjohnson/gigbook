@@ -1,11 +1,10 @@
-import re
 from flask import Flask, render_template, flash, redirect, render_template, request, session, g, jsonify
 import requests
 from flask_debugtoolbar import DebugToolbarExtension
-# from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import Pagination
 from sqlalchemy.exc import IntegrityError
-# from flask_wtf.csrf import CSRFProtect
-from flask_cors import CORS
+
+
 
 from models import db, connect_db, User, Country, State, City, Favorite
 from forms import EditProfileForm, SearchVenuesForm, LoginForm, UserAddForm
@@ -23,6 +22,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///gigbook_db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
+app.debug = False
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
@@ -49,9 +49,8 @@ def do_login(user):
     """Log in user."""
 
     session[CURR_USER_KEY] = user.id
-    session["favorites"] = []
-    for fav in user.favorites:
-        session["favorites"].append(fav.venue_name)
+    session["favorites"] = [fav.venue_name for fav in user.favorites]
+    print(session["favorites"])
 
 
 def do_logout():
@@ -173,7 +172,7 @@ def show_profile(user_id):
     """Shows user profile."""
 
     user = User.query.get(user_id)
-    
+   
     if not user:
 
             flash("User does not exist.", "danger")
@@ -268,12 +267,6 @@ def searchVenues():
     """Displays Venue Search form. On submit, Ticketmaster 
     API is called and response is returned in JSON format, 
     to be displayed on page as list of venues."""
-    
-    if CURR_USER_KEY in session:
-
-        user = User.query.get(session[CURR_USER_KEY])
-        userFavs = [fav.venue_name for fav in user.favorites]
-        print("user favs", userFavs)
 
     form = SearchVenuesForm()
 
@@ -291,7 +284,7 @@ def searchVenues():
         # returns venues with no limit 
 
         response = requests.get(f'{BASE_URL}/venues.json?size=200&sort=name,asc&keyword={c.name}&apikey={API_KEY}')
-        print(response.json())
+        
         venues = []
         numPages = response.json()["page"]["totalPages"]
 
@@ -348,6 +341,7 @@ def searchVenues():
 
                 i += 1
 
+        
         return render_template('search-venues.html', form=form, venues=venues)
 
     else:
@@ -362,30 +356,55 @@ def searchVenues():
 ######################################################
 
 
-@app.route('/favorites/add', methods=["GET", "POST"])
+@app.route('/favorites/add', methods=["POST"])
 def add_favorite():
     """Creates favorite from venue and adds to favorites table in DB."""
 
     ven_name = request.json['venue_name']
-    favorite = Favorite(user_id=session[CURR_USER_KEY], venue_name=ven_name)
+    print('my venue', ven_name)
+    venue = Favorite.query.filter_by(venue_name=ven_name, user_id=session[CURR_USER_KEY]).first()
+   
+    if not venue:
 
-    db.session.add(favorite)
-    db.session.commit()
+        favorite = Favorite(user_id=session[CURR_USER_KEY], venue_name=ven_name)
 
-    # return redirect('/search-venues')
+        db.session.add(favorite)
+        db.session.commit()
+
+        session["favorites"] = [fav.venue_name for fav in g.user.favorites]
+
+        result = {"result": "True"}
+
+        return jsonify(result)
+
+    result = {"result": "False"}
+    return jsonify(result)
 
     
-@app.route('/favorites/<int:venue_id>/delete', methods=["GET", "POST"])
-def delete_favorite(venue_id):
+@app.route('/favorites/delete', methods=["DELETE"])
+def delete_favorite():
     """Removes venue from favorites table."""
+    user = User.query.get(session[CURR_USER_KEY])
+    ven_name = request.json['venue_name']
+    print('XXXX', ven_name)
+    favorite = Favorite.query.filter_by(venue_name=ven_name, user_id=session[CURR_USER_KEY]).first()
+    print("favorite", favorite)
+    print(session["favorites"])
+    
+    if favorite:
+        print("fav", favorite)
+        db.session.delete(favorite)
+        db.session.commit()
 
-    # ven_name = request.json['venue_name']
-    favorite = Favorite.query.get(venue_id)
+        session["favorites"] = [fav.venue_name for fav in user.favorites]
+        print('session favs', session["favorites"])
+        result = {"result": "True"}
 
-    db.session.delete(favorite)
-    db.session.commit()
+        return jsonify(result)
+    print(session["favorites"])
+    result = {"result": "False"}
 
-    return redirect(f'/users/{ session[CURR_USER_KEY] }')
+    return jsonify(result)
 
 ######################################################
 #                                                    #

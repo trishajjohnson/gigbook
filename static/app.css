@@ -29,3 +29,16 @@ ul {
     border-radius: 50%;
     width: 300px;
 }
+
+.fav {
+    display: inline-block;
+}
+
+.ven-name {
+    font-size: 20px;
+    margin: 5px 30px 5px 5px;
+}
+
+.hide {
+    display: none;
+}
