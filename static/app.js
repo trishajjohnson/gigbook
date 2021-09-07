@@ -9,14 +9,14 @@
 
 async function toggleFavorite(evt) {
   
-  // evt.preventDefault();
+  evt.preventDefault();
   
   const button = evt.target.closest('button');
   const venName = button.id;
 
   //  Handling click action for adding/deleting favorites from the Search Venue page.
 
-  if(button.className === "btn btn-primary add-delete" && button.innerHTML.includes("heart")){
+  if(button.className === "btn btn-dark add-delete" && button.innerHTML.includes("heart")){
     
     const response = await axios({
       method: 'POST',
@@ -46,8 +46,8 @@ async function toggleFavorite(evt) {
     });
 
     if(response.data["result"] === "True") {
-      button.className = "btn btn-primary add-delete";
-      button.innerHTML = "<i class='far fa-heart'></i>";
+      button.className = "btn btn-dark add-delete";
+      button.innerHTML = "<i style='color: greenyellow;' class='far fa-heart'>";
       
     }
 
@@ -76,7 +76,8 @@ async function toggleFavorite(evt) {
 
 } 
 
-// click listener for adding/deleting favorites from
+// click listener for adding/deleting favorites from Search Venue page
+// as well as User profile page under Favorite Venues list.
 
 $(".add-delete").on("click", toggleFavorite);
 
@@ -85,6 +86,8 @@ $(".add-delete").on("click", toggleFavorite);
 //                                              //
 //      JS for dynamic SelectField options      //
 //      on Venue Search Form.                   //
+//                                              //
+//           *** Task for later ***             //
 //                                              //
 //////////////////////////////////////////////////
 
@@ -130,6 +133,8 @@ $(".add-delete").on("click", toggleFavorite);
 //      (Need to figure out CSRF issue   //
 //      in order to use WTForms with     //
 //      axios.)                          //
+//                                       //
+//         *** Task for later ***        //
 //                                       //
 ///////////////////////////////////////////
 

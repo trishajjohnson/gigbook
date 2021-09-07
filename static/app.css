@@ -1,20 +1,35 @@
+/* HTML elements stlyings  */
+
+a {
+    text-decoration: none !important;
+}
+
 ul {
     list-style: none;
 }
 
+
+
+/* Flash message stylings  */
+
 .success {
-    background-color: lightgreen;
-    color: darkgreen;
+    background-color: #D7F9A3;
+    color: black;
+    
 }
 
 .danger {
     background-color: #FFB7B7;
-    color: red;
+    color: black;
 }
 
 .flash {
     padding: 15px;
 }
+
+
+
+/* Navbar stylings  */
 
 #nav-img {
     width: 30px;
@@ -25,13 +40,38 @@ ul {
     display: inline-block;
 }
 
+#brand-logo {
+    font-size: 40px;
+}
+
+#brand {
+    color: greenyellow;
+}
+
+
+
+/* User profile stylings  */
+
 .profile-img {
     border-radius: 50%;
-    width: 300px;
+    width: 275px;
+
 }
+
+#user-locale {
+    font-size: 25px;
+}
+
+
+
+/* Favorites on user profile stylings  */
 
 .fav {
     display: inline-block;
+}
+
+.hide {
+    display: none;
 }
 
 .ven-name {
@@ -39,6 +79,16 @@ ul {
     margin: 5px 30px 5px 5px;
 }
 
-.hide {
-    display: none;
+
+
+/* Edit User profile stylings  */
+
+.cancel {
+    color: black !important;
+    background-color: white !important;
+}
+
+.cancel:hover {
+    color: black !important;
+    background-color: white !important;
 }

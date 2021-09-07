@@ -7,7 +7,6 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
 from models import db, Country, State
 
-# countries = [(country.id, country.name) for country in models.Country.query.all()]
 
 class UserAddForm(FlaskForm):
     """Form for adding users."""
@@ -32,13 +31,13 @@ class EditProfileForm(FlaskForm):
 
     email = StringField('E-mail', validators=[DataRequired(), Email()])
     image_url = StringField('(Optional) Image URL') 
-    # image_url = StringField('(Optional) Image URL', validators = [Optional(), Length(max = 50)], 
-    # filters = [lambda x: x or None])
     city = StringField('City')
     state = StringField('State')
 
 class SearchVenuesForm(FlaskForm):
     """Form for searching venues."""
+    
+    # Commented out code below is for dynamic SelectFields for the future 
 
     # country = SelectField('Country', choices=countries, allow_blank=True)
     # country = QuerySelectField('Country', query_factory=countries, allow_blank=True, get_label='name')

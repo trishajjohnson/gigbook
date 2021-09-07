@@ -1,85 +1,111 @@
 {% extends 'index.html' %}
 
 {% block content %}
-
 <div class=container>
+  
+  {% block title %}
+  <h2 class="display-2 text-center">Search Venues</h2>
+  {% endblock %}
+  
+  <p class="lead text-center">Search venues by city and state.</p>
+  
+  <div class="row justify-content-center">
+    
+    <div class="col-md-4">
 
-  <h1>Search Venues</h1>
-  <div class="col-md-8">
-    <form id="search-venues-form" method="POST">
+      <form id="search-venues-form" method="POST">
 
-      {{ form.hidden_tag() }}
+        {{ form.hidden_tag() }}
 
-      {% for field in form if field.widget.input_type != 'hidden'%}
+        {% for field in form if field.widget.input_type != 'hidden'%}
+        <div class="form-group">
 
-      <div class="form-group">
+          {{field.label}}
 
-        {{field.label}}
-        {{field(class_="form-control")}}
-        {% for err in field.errors %}
+          {{field(class_="form-control mt-1 mb-1")}}
 
-        <small class="form-text text-danger">
-          {{err}}
-        </small>
+          {% for err in field.errors %}
 
+          <small class="form-text text-danger">
+            {{err}}
+          </small>
+          {% endfor %}
+
+        </div>
         {% endfor %}
 
-      </div>
+        <div class="text-end mt-3">
 
-      {% endfor %}
+          <button class="btn  btn-dark  btn-md">Search</button>
 
-      <button class="btn  btn-success  btn-lg">Search</button>
-      
-    </form>
+        </div>
+
+      </form>
+
+    </div>
+
   </div>
 
   {% if venues %}
+  <div class="table-responsive">
 
-  <div class="table-responsive" style="width: 100%;">
-    <table class="table table-hover mb-0">
-      <thead class="thead table-dark">
+    <div class="row justify-content-center">
+
+      <div class="col-md-8">
+
+        <table class="table table-hover mb-5 mt-5">
+
+          <thead class="thead table-dark">
+
+              <tr>
+                  <th>#</th>
+                  <th>Venue Name</th>
+                  <!-- <th>Address</th> -->
+                  <th>City</th>
+                  <th>State</th>
+                  <th>Zip Code</th>
+                  <th>Favorite</th>
+              </tr>
+
+          </thead>
+
+          <tbody>
+
+          {% for venue in venues %}
           <tr>
-              <th>#</th>
-              <th>Venue Name</th>
-              <th>Address</th>
-              <th>City</th>
-              <th>State</th>
-              <th>Zip Code</th>
-              <th>Favorite</th>
-          </tr>
-      </thead>
-      <tbody>
 
-      {% for venue in venues %}
-
-        <tr>
-            <th scope="row">{{ loop.index }}</th>
-            <td class="align-middle">{{ venue.name }}</td>
-            <td class="align-middle">{{ venue.address }}</td>
-            <td class="align-middle">{{ venue.city }}</td>
-            <td class="align-middle">{{ venue.state }}</td>
-            <td class="align-middle">{{ venue.postalCode }}</td>
-            <td class="align-middle">
-              {% if g.user %}
-
-                {% if venue.name in session["favorites"] %}
-                <button id="{{ venue.name }}" class="btn btn-danger add-delete"><i style="color: white;" class="fas fa-heart"></i></button>  
-                {% else %} 
-                <button id="{{ venue.name }}" class="btn btn-primary add-delete"><i class="far fa-heart"></i></button> 
+              <th scope="row">{{ loop.index }}</th>
+              <td class="align-middle">{{ venue.name }}</td>
+              <!-- <td class="align-middle">{{ venue.address }}</td> -->
+              <td class="align-middle">{{ venue.city }}</td>
+              <td class="align-middle">{{ venue.state }}</td>
+              <td class="align-middle">{{ venue.postalCode }}</td>
+              <td class="align-middle">
+                
+                {% if g.user %}
+                  {% if venue.name in session["favorites"] %}
+                  <button id="{{ venue.name }}" class="btn btn-danger add-delete"><i style="color: white;" class="fas fa-heart"></i></button>  
+                  {% else %} 
+                  <button id="{{ venue.name }}" class="btn btn-dark add-delete"><i style="color: greenyellow;" class="far fa-heart"></i></button> 
+                  {% endif %}
+                
                 {% endif %}
-              
-              {% endif %}
-            </td>
-        </tr>
+              </td>
 
-      {% endfor %}
+          </tr>
 
-      </tbody>
-    </table>
+          {% endfor %}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
   </div>   
-
   {% endif %}
 
-</div>
-      
+</div>     
 {% endblock %}

@@ -1,10 +1,7 @@
 from flask import Flask, render_template, flash, redirect, render_template, request, session, g, jsonify
 import requests
 from flask_debugtoolbar import DebugToolbarExtension
-from flask_sqlalchemy import Pagination
 from sqlalchemy.exc import IntegrityError
-
-
 
 from models import db, connect_db, User, Country, State, City, Favorite
 from forms import EditProfileForm, SearchVenuesForm, LoginForm, UserAddForm
@@ -50,7 +47,6 @@ def do_login(user):
 
     session[CURR_USER_KEY] = user.id
     session["favorites"] = [fav.venue_name for fav in user.favorites]
-    print(session["favorites"])
 
 
 def do_logout():
@@ -58,6 +54,7 @@ def do_logout():
 
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
+        del session["favorites"]
 
 
 #########################################
@@ -130,10 +127,9 @@ def login():
 @app.route('/logout')
 def logout():
     """Handle logout of user."""
-
-    # IMPLEMENT THIS
-    del session[CURR_USER_KEY]
-
+    
+    do_logout()
+    
     flash("You have successfully logged out.", "success")
     return redirect("/login")
 
@@ -157,14 +153,6 @@ def homepage():
 #            User Routes             #
 #                                    #
 ######################################
-
-@app.route('/users')
-def get_all_users():
-    """Show all users."""
-
-    users = User.query.all()
-
-    return render_template('all-users.html', users=users)
 
 
 @app.route("/users/<int:user_id>")
@@ -277,12 +265,7 @@ def searchVenues():
         s = State.query.get(state)
         c = City.query.get(city)
 
-        # example of sending request with a limit on number of venues returned 
-
-        # response = requests.get(f'{BASE_URL}/venues.json?size=5&keyword={c.name}&apikey={API_KEY}')
-
-        # returns venues with no limit 
-
+        
         response = requests.get(f'{BASE_URL}/venues.json?size=200&sort=name,asc&keyword={c.name}&apikey={API_KEY}')
         
         venues = []
@@ -297,8 +280,7 @@ def searchVenues():
             if resp.json()["_embedded"]["venues"]:
                 
                 for venue in resp.json()["_embedded"]["venues"]:
-                    # if venue["address"]["line1"]:
-                    #     print(venue["address"]["line1"])   
+                       
                     if venue["city"]["name"] == c.name:
                         
                         if venue["state"]:
@@ -307,32 +289,17 @@ def searchVenues():
 
                                 ven = {
                                     "name": venue["name"], 
-                                    # "address": venue["address"]["line1"], 
                                     "city": venue["city"]["name"], 
                                     "postalCode": venue["postalCode"], 
                                     "state": venue["state"]["name"]
                                 }
 
                                 venues.append(ven)
-                                
-                                # else:
-
-                                #     ven = {
-                                #         "name": venue["name"], 
-                                #         "address": "Address Unknown", 
-                                #         "city": venue["city"]["name"], 
-                                #         "postalCode": venue["postalCode"], 
-                                #         "state": venue["state"]["name"]
-                                #     }
-
-                                #     venues.append(ven)
-
                         
                         else:
                             
                             ven = {
                                         "name": venue["name"], 
-                                        # "address": venue["address"]["line1"], 
                                         "city": venue["city"]["name"], 
                                         "postalCode": venue["postalCode"]
                                     }
@@ -349,6 +316,7 @@ def searchVenues():
             "search-venues.html", form=form)
 
 
+
 ######################################################
 #                                                    #
 # Favorites Routes #
@@ -361,7 +329,6 @@ def add_favorite():
     """Creates favorite from venue and adds to favorites table in DB."""
 
     ven_name = request.json['venue_name']
-    print('my venue', ven_name)
     venue = Favorite.query.filter_by(venue_name=ven_name, user_id=session[CURR_USER_KEY]).first()
    
     if not venue:
@@ -378,39 +345,42 @@ def add_favorite():
         return jsonify(result)
 
     result = {"result": "False"}
+
     return jsonify(result)
 
     
 @app.route('/favorites/delete', methods=["DELETE"])
 def delete_favorite():
     """Removes venue from favorites table."""
+
     user = User.query.get(session[CURR_USER_KEY])
     ven_name = request.json['venue_name']
-    print('XXXX', ven_name)
     favorite = Favorite.query.filter_by(venue_name=ven_name, user_id=session[CURR_USER_KEY]).first()
-    print("favorite", favorite)
-    print(session["favorites"])
     
     if favorite:
-        print("fav", favorite)
+        
         db.session.delete(favorite)
         db.session.commit()
 
         session["favorites"] = [fav.venue_name for fav in user.favorites]
-        print('session favs', session["favorites"])
+        
         result = {"result": "True"}
 
         return jsonify(result)
-    print(session["favorites"])
+
+    
     result = {"result": "False"}
 
     return jsonify(result)
 
+
 ######################################################
 #                                                    #
 # routes for dynamic SelectFields in SearchVenueForm #
+#            (Not currently implemented)             #
 #                                                    #
 ######################################################
+
 
 @app.route("/country/<country>")
 def get_states(country):

@@ -1,37 +1,50 @@
 {% extends 'index.html' %}
 
 {% block content %}
-
 <div class="container">
+
     {% block title %}
     <h2 class="display-2 text-center">Register New User</h2>
     {% endblock %}
+
     <p class="lead text-center">Register Below.  Already have an account?  <a href="/login">Login</a></p>
 
     <div class="row justify-content-center">
+        
         <div class="col-md-5">
+            
             <form method="POST">
+                
                 {{ form.hidden_tag() }}
+                
                 {% for field in form 
                     if field.widget.input_type != 'hidden' %}
-                    <div class="form-group m-2">
-                        {{ field.label(class_="m-1") }}
-                        {{ field(class_="form-control") }}
+                <div class="form-group">
+                    
+                    {{ field.label(class_="m-1") }}
+                    
+                    {{ field(class_="form-control") }}
 
-                        {% for err in field.errors %}
-                        <small class="form-text text-danger">
-                            {{ err }}
-                        </small>
-                        {% endfor %}
-                    </div> 
+                    {% for err in field.errors %}
+                    <small class="form-text text-danger">
+                        {{ err }}
+                    </small>
+                    {% endfor %}
+                
+                </div> 
                 {% endfor %}
 
-                <div class="form-group m-2">
-                    <!-- <a href="/" class="btn btn-danger">Back</a> -->
-                    <button class="btn btn-success">Register</button>
+                <div class="form-group mt-3 text-end">
+                    
+                    <button class="btn btn-dark">Register</button>
+
                 </div>
+
             </form>
+
         </div>
+
     </div>
+
 </div>
 {% endblock %}
