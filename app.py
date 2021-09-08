@@ -18,8 +18,8 @@ DEFAULT_IMG_URL = "/static/images/default-pic.png"
 
 app = Flask(__name__)
 
-app.config["SECRET_KEY"] = "oh-so-secret"
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///gigbook_db"
+app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'shh')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgres:///gigbook_db')
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 

@@ -1,7 +1,9 @@
+import os
+
 from app import app
 from models import User, Country, State, City, Favorite, db, connect_db
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///gigbook_db"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL', 'postgres:///gigbook_db')
 
 connect_db(app)
 
