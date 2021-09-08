@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+
 from flask import Flask, render_template, flash, redirect, render_template, request, session, g, jsonify
 import requests
 from flask_debugtoolbar import DebugToolbarExtension
@@ -6,7 +9,8 @@ from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Country, State, City, Favorite
 from forms import EditProfileForm, SearchVenuesForm, LoginForm, UserAddForm
 
-from secret import API_KEY
+load_dotenv()
+API_KEY = os.environ.get("API_KEY")
 
 CURR_USER_KEY = "curr_user"
 BASE_URL = "https://app.ticketmaster.com/discovery/v2"
