@@ -1,17 +1,33 @@
-# CAPSTONE 1 PROPOSAL
+# GiGBOOK docs
 
-For my first capstone, I am going to build out the first installment of my gig booking application.    In this proposal, I will outline the features of this initial capstone, answer various technical and theoretical questions regarding the nature of the application, as well as the purpose this service will provide.
+GiGBOOK is a database driven application utilizing the external Ticketmaster API.  It provides users the ability to search for music venues in a specific geographical location.  
 
-The fundamental goal for this first installment is to build a profile for each venue/artist for venues/artists to visit and view scheduled gigs, or rather, open dates for potential gigs to be booked with that artist/venue.  Utilizing the Ticketmaster API, I will construct a list of venues along with an events calendar.  The application will have the ability for smaller, more obscure venues/artists to create a profile in order to search/be searched out by other artists/venues.  The basic schema will include tables for artists, venues, region/locations and events, with the possibility of expanding with tables like style/genre.
+Users may register and create a profile, which will be saved into the database.  Cities, states and countries are also tables in the database.  Once registerd, a user may login with their proper credentials, edit their profile, search venues and save/remove to/from their favorites list, also a table in the database.
 
-As far as problems I may run into regarding the API, the only real complication that I can think of at the moment would regard a lack of relevant information to support the functionality.  However, based on the fundamental idea, I don’t foresee this.  The basic functionality for this installment of the application is building profiles for artists/venues, the calendar of events for each artist/venue and then the functionality of point of contact between the two.
+The tools I utilized to build this application:
 
-Ultimately, I want this application to evolve into a professional network of creatives, providing services that make it possible for amateur musicians to orchestrate their own careers, earning a living making and performing music without the need of a label or management team.  I expect that someday it would have different levels of membership, the first being, of course, a free “fan” membership, where non-creatives can follow the professional comings and goings of their favorite artists/venues, as well as providing a means to discovering other relatable, new up and coming artists, similar in style, all over the world.  There will be “professional” memberships for industry workers(artist, venue, etc.), consolidating professional resources and services in one place.
-
-Eventually, more complexity will be added to the application.  Artists’ profiles will be their EPK’s, providing a place where industry professionals can find and vet them, filtering by style/genre as well as geographical location and, potentially, size of following.  Eventually, I want to incorporate a news API to compile a list of press for each artist, as well as an API like Spotify to provide a discography of each artist where someone can listen to their body of work and see how many monthly listeners/followers they have by region, watch/read interviews (YouTube API) and reviews of their work or performances.   
-
-Artists will be able to find venues that fit their style and size of following.  Perhaps they are planning a tour in an area where they are more obscure with the hopes of boosting their fanbase.  Finding venues that often host artists with similar style and size following would be helpful.  The network will also be a means for artists to connect with other similar artists in order to collaborate on projects, tours or individual shows.  
-
-Venues want to know the artist they book will draw a crowd and drive ticket sales.  It makes no sense for them to book an obscure artist with a small following to play a stadium bill.  Perhaps a venue has a bill with a headliner, but wishes to seek out local talent in the area to open a show.  This application will provide the resources for them to do that.  A venue will be able to reach out to artists, book and add their name to a bill on their calendar for the public to view, as well as a means to connect with the artist by providing a link to their profile, allowing fans to follow them. It would also be a unique feature to be able to search past shows, or to view a list of shows/bills a venue has had in the past.
-
-Fans will be able to discover similar artists in their area and abroad, view their show dates and, inevitably, source and purchase tickets for those shows.  The application will allow them to follow and like things relating to the artist/venue/event and ultimately, allowing artists and venues to track their growing following, ticket sales for shows, as well as attendance of their shows.  This could be a resource for them to help track their career, earnings and schedule, past, present and future.
+-PostgresSQL
+<br>
+-SQLAlchemy
+<br>
+-Jinja
+<br>
+-Heroku
+<br>
+-RESTful APIs
+<br>
+-Axios
+<br>
+-Python/Flask
+<br>
+-JQuery
+<br>
+-Javascript
+<br>
+-HTML
+<br>
+-CSS
+<br>
+-WTForms
+<br>
+-Bcrypt
